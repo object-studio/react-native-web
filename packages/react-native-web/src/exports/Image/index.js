@@ -51,7 +51,20 @@ function createTintColorSVG(tintColor, id) {
 }
 
 function getFlatStyle(style, blurRadius, filterId) {
-  const flatStyle = StyleSheet.flatten(style);
+  // Check if style argumenIt is array.
+  // It means that array contains both indexes: 0 - react-native styles, 1 - class name to be passed to styleq ($$css is important in index)
+  let flatStyle;
+  let isStyleWithClassMame = false;
+
+  if (Array.isArray(style)) {
+    flatStyle = style[0];
+    isStyleWithClassMame = true;
+  } else {
+    flatStyle = style;
+  }
+
+  flatStyle = StyleSheet.flatten(flatStyle);
+
   const { filter, resizeMode, shadowOffset, tintColor } = flatStyle;
 
   // Add CSS filters
@@ -91,7 +104,14 @@ function getFlatStyle(style, blurRadius, filterId) {
   delete flatStyle.overlayColor;
   delete flatStyle.resizeMode;
 
-  return [flatStyle, resizeMode, _filter, tintColor];
+  // After all actions with flatStyle, need to merge flatStyle and style[1] to append class name
+  let mergedStyle = null;
+
+  if (isStyleWithClassMame) {
+    mergedStyle = [flatStyle, style[1]];
+  }
+
+  return [mergedStyle || flatStyle, resizeMode, _filter, tintColor];
 }
 
 function resolveAssetDimensions(source) {

@@ -377,6 +377,18 @@ describe('components/Image', () => {
       );
       expect(container.firstChild).toMatchSnapshot();
     });
+
+    test('compability with styleq array', () => {
+      const { container } = render(
+        <Image
+          style={[
+            { width: 209, height: 44 },
+            { $$css: true, className: 'test-class' }
+          ]}
+        />
+      );
+      expect(container.firstChild).toMatchSnapshot();
+    });
   });
 
   test('prop "testID"', () => {
